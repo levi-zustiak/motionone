@@ -6,8 +6,11 @@ import {
   JSXElement,
 } from "solid-js"
 import { mountedStates } from "@motionone/dom"
-import { resolveFirst } from "@solid-primitives/refs"
-import { createSwitchTransition } from "@solid-primitives/transition-group"
+import { resolveElements, resolveFirst } from "@solid-primitives/refs"
+import {
+  createListTransition,
+  createSwitchTransition,
+} from "@solid-primitives/transition-group"
 import { onCompleteExit } from "./primitives"
 import { Options } from "./types"
 
@@ -46,8 +49,10 @@ export const Presence: FlowComponent<{
   const render = (
     <PresenceContext.Provider value={() => initial}>
       {
+        createSwitchTransition(
           resolveFirst(() => props.children),
           {
+            appear: state.initial,
             mode: props.exitBeforeEnter ? "out-in" : "parallel",
             onExit(el, done) {
               batch(() => {
@@ -60,6 +65,7 @@ export const Presence: FlowComponent<{
               batch(() => {
                 done()
                 console.log(done)
+              })
             },
           }
         ) as any as JSXElement
@@ -71,5 +77,29 @@ export const Presence: FlowComponent<{
 
   return render
 }
+
+export const PresenceList = (props) => {
+  let initial = props.initial !== false
+  const [mount, setMount] = createSignal(true)
+
+  const state = { initial: props.initial ?? true, mount }
+
+  const render = (
+    <PresenceContext.Provider value={() => initial}>
+      {
+        createListTransition(resolveElements(() => props.children).toArray, {
+          appear: state.initial,
+          onChange({ list, added, removed, unchanged, finishRemoved }) {
+            removed.forEach((el) =>
+              (mountedStates.get(el)?.getOptions() as Options).exit
+                ? onCompleteExit(el, () => finishRemoved([el]))
+                : finishRemoved([el])
+            )
+          },
+        }) as any as JSXElement
+      }
+    </PresenceContext.Provider>
+  )
+
   return render
 }
