@@ -10,7 +10,7 @@
   "files": [
     "dist"
   ],
-  "main": "dist/cjs/index.js",
+  "main": "dist/esm/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "type": "module",
@@ -38,7 +38,7 @@
     "test:browser": "jest --coverage --config jest.config.js",
     "test:ssr": "jest --config jest.ssrconfig.js",
     "measure": "bundlesize",
-    "prepare": "rimraf dist && rollup -c"
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@motionone/dom": "^10.16.4",
