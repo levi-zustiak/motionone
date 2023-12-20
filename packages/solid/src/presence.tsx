@@ -1,8 +1,13 @@
-import { createContext, FlowComponent } from "solid-js"
+import {
+  batch,
+  createContext,
+  createSignal,
+  FlowComponent,
+  JSXElement,
+} from "solid-js"
 import { mountedStates } from "@motionone/dom"
 import { resolveFirst } from "@solid-primitives/refs"
 import { createSwitchTransition } from "@solid-primitives/transition-group"
-import { ParentContext } from "./motion"
 import { onCompleteExit } from "./primitives"
 import { Options } from "./types"
 
@@ -33,28 +38,38 @@ export const Presence: FlowComponent<{
   initial?: boolean
   exitBeforeEnter?: boolean
 }> = (props) => {
-  let initial = props.initial !== false
+  let initial = props.initial ?? true
+  const [mount, setMount] = createSignal(true)
+
+  const state = { initial: props.initial ?? true, mount }
 
   const render = (
     <PresenceContext.Provider value={() => initial}>
-      <ParentContext.Provider value={undefined}>
-        {createSwitchTransition(
+      {
           resolveFirst(() => props.children),
           {
-            appear: initial,
             mode: props.exitBeforeEnter ? "out-in" : "parallel",
-            onExit(el, remove) {
-              const state = mountedStates.get(el)
-              if (state && (state.getOptions() as Options).exit)
-                onCompleteExit(el, remove)
-              else remove()
+            onExit(el, done) {
+              batch(() => {
+                ;(mountedStates.get(el)?.getOptions() as Options).exit
+                  ? onCompleteExit(el, done)
+                  : done()
+              })
+            },
+            onEnter(_, done) {
+              batch(() => {
+                done()
+                console.log(done)
             },
           }
-        )}
-      </ParentContext.Provider>
+        ) as any as JSXElement
+      }
     </PresenceContext.Provider>
   )
 
   initial = true
+
+  return render
+}
   return render
 }
