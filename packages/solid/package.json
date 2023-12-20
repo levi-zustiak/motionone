@@ -8,9 +8,11 @@
     "David Di Biase <dave.dibiase@gmail.com>"
   ],
   "files": [
-    "dist"
+    "dist/cjs/index.js",
+    "dist/esm/index.js",
+    "dist/types/index.d.ts"
   ],
-  "main": "dist/esm/index.js",
+  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "type": "module",
