@@ -5,7 +5,6 @@ import {
   motion,
 } from "../../../../../packages/solid/src"
 // import { Motion } from "@motionone/solid"
-motion
 
 export default function MotionPrimitive() {
   let ref1!: HTMLDivElement

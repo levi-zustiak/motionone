@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router"
 
-export default function Home() {
+export default function Index() {
   return (
     <main>
       <h1>Examples</h1>
