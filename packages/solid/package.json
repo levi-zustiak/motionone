@@ -7,11 +7,6 @@
     "Damian Tarnawski <gthetarnav@gmail.com>",
     "David Di Biase <dave.dibiase@gmail.com>"
   ],
-  "files": [
-    "dist/cjs/index.js",
-    "dist/esm/index.js",
-    "dist/types/index.d.ts"
-  ],
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
